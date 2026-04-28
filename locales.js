@@ -5,6 +5,9 @@
  * Usage: Import this and call addLocaleData() during extension initialization
  */
 
+import localeData_zh_tw from './locales/zh-tw.json';
+import localeData_zh_cn from './locales/zh-cn.json';
+
 /**
  * Runtime JSON loader for locales that don't support JSON import assertions
  */
@@ -1237,9 +1240,7 @@ Return ONLY the JSON, no other text.`,
  */
 export const localeData = {
     'en': localeData_en,
-    // Add more locales here:
-    // 'fr-fr': localeData_fr,
-    // 'es-es': localeData_es,
-    // etc.
+    'zh-tw': localeData_zh_tw,
+    'zh-cn': localeData_zh_cn,
 };
 
