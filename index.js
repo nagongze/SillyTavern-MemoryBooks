@@ -6965,11 +6965,22 @@ async function init() {
   console.log("STMemoryBooks: Initializing");
   // Merge this extension's locale data into SillyTavern's current locale:
   // - Do not reinitialize ST i18n (host owns init)
-  // - Load JSON for current locale if available, then ensure English fallback exists
+  // - Add English fallback first, then current locale overwrites it (primary wins last)
   try {
     const current = getCurrentLocale?.() || "en";
 
+    // Add English fallback FIRST so the current locale can override it
+    if (localeData && typeof localeData === "object" && current !== "en" && localeData["en"]) {
+      addLocaleData(
+        current,
+        Object.fromEntries(
+          Object.entries(localeData["en"]).filter(([k]) => true),
+        ),
+      );
+    }
+
     // Try to fetch JSON bundle for current locale (works without JSON import assertions)
+    // This runs after English so it overwrites English keys with translated ones
     try {
       const jsonData = await loadLocaleJson(current);
       if (jsonData) {
@@ -6979,19 +6990,9 @@ async function init() {
       console.warn("STMemoryBooks: Failed to load JSON locale bundle:", e);
     }
 
-    // Merge statically-bundled locales (English fallback, and any inline bundles)
-    if (localeData && typeof localeData === "object") {
-      if (localeData[current]) {
-        addLocaleData(current, localeData[current]);
-      }
-      if (current !== "en" && localeData["en"]) {
-        addLocaleData(
-          current,
-          Object.fromEntries(
-            Object.entries(localeData["en"]).filter(([k]) => true),
-          ),
-        );
-      }
+    // Merge statically-bundled locales for the current language (if any inline bundles exist)
+    if (localeData && typeof localeData === "object" && localeData[current]) {
+      addLocaleData(current, localeData[current]);
     }
   } catch (e) {
     console.warn("STMemoryBooks: Failed to merge plugin locales:", e);
