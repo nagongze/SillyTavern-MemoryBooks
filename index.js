@@ -6962,7 +6962,7 @@ function showFailedAIResponsePopup(error) {
 async function init() {
   if (hasBeenInitialized) return;
   hasBeenInitialized = true;
-  console.log("STMemoryBooks: Initializing [nagongze-fix-v3]");
+  console.log("STMemoryBooks: Initializing");
   // Merge this extension's locale data into SillyTavern's current locale:
   // - Do not reinitialize ST i18n (host owns init)
   // - Add English fallback first, then current locale overwrites it (primary wins last)
